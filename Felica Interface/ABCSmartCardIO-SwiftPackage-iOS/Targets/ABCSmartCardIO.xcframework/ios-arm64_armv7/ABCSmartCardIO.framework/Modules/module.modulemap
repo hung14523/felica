@@ -1,0 +1,11 @@
+framework module ABCSmartCardIO {
+  umbrella header "ABCSmartCardIO.h"
+
+  export *
+  module * { export * }
+}
+
+module ABCSmartCardIO.Swift {
+    header "ABCSmartCardIO-Swift.h"
+    requires objc
+}

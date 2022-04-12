@@ -1,0 +1,273 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.4.2 (swiftlang-1205.0.28.2 clang-1205.0.19.57)
+// swift-module-flags: -target arm64-apple-ios10.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name ABCSmartCardIO
+@_exported import ABCSmartCardIO
+import CommonCrypto
+import CoreBluetooth
+import Foundation
+import Swift
+import UIKit
+import os.log
+import os
+@objc @_hasMissingDesignatedInitializers public class CardTerminal : ABCSmartCardIO.BaseClass {
+  @objc deinit
+  public func connect(protocolString: Swift.String) throws -> ABCSmartCardIO.Card
+  public func getName() -> Swift.String
+  public func isCardPresent() -> Swift.Bool
+  public func waitForCardAbsent(timeout: Swift.Int) throws -> Swift.Bool
+  public func waitForCardPresent(timeout: Swift.Int) -> Swift.Bool
+  public func getBatteryLevel() throws -> Swift.UInt8
+  public func getFirmwareVersion() throws -> Swift.String
+  @objc override dynamic public init()
+}
+@objc @_hasMissingDesignatedInitializers public class CardTerminals : ABCSmartCardIO.BaseClass {
+  public enum State {
+    case ALL
+    case CARD_ABSENT
+    case CARD_INSERTION
+    case CARD_PRESENT
+    case CARD_REMOVAL
+    public static func == (a: ABCSmartCardIO.CardTerminals.State, b: ABCSmartCardIO.CardTerminals.State) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  @objc deinit
+  public func getTerminal(name: Swift.String) -> ABCSmartCardIO.CardTerminal?
+  public func list() -> [ABCSmartCardIO.CardTerminal]
+  public func list(state: ABCSmartCardIO.CardTerminals.State) -> [ABCSmartCardIO.CardTerminal]
+  public func waitForChange()
+  public func waitForChange(timeout: Swift.Int) -> Swift.Bool
+  @objc override dynamic public init()
+}
+@objc @_hasMissingDesignatedInitializers public class ATR : ABCSmartCardIO.BaseClass {
+  @objc deinit
+  public func getBytes() -> Foundation.Data
+  public func getHistoricalBytes() -> Foundation.Data
+  public func toString() -> Swift.String
+  @objc override dynamic public init()
+}
+@_hasMissingDesignatedInitializers public class FrameworkInformation {
+  public static var displayName: Swift.String {
+    get
+  }
+  public static var name: Swift.String {
+    get
+  }
+  public static var buildNumber: Swift.String {
+    get
+  }
+  public static var shortVersionString: Swift.String {
+    get
+  }
+  public static var identifier: Swift.String {
+    get
+  }
+  public static var copyright: Swift.String {
+    get
+  }
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class ABCircleTerminalFactory : ABCSmartCardIO.Status {
+  public static func getDefault() -> ABCSmartCardIO.ABCircleTerminalFactory
+  public static func getInstance(type: Swift.String, params: Swift.AnyObject? = nil, provider: Swift.String = "") throws -> ABCSmartCardIO.ABCircleTerminalFactory
+  public func getDefaultType() -> Swift.String
+  public func getType() -> Swift.String
+  public func scanBluetooth() throws
+  public func scanBluetooth(durationInSeconds: Swift.Int) throws
+  public func scanBluetooth(name: Swift.String) throws
+  public func scanBluetooth(durationInSeconds: Swift.Int, name: Swift.String) throws
+  public func setBluetoothRssiFilter(rssiValue: Swift.Int) throws
+  public func clearCustomEncryptionKey()
+  public func setCustomEncryptionKey(customKeyString: Swift.String) throws
+  public func setCustomEncryptionKey(customKey: Foundation.Data) throws
+  public func disconnect(cardTerminal: ABCSmartCardIO.CardTerminal)
+  public func terminals() -> ABCSmartCardIO.CardTerminals
+  public func toString() -> Swift.String
+  @objc deinit
+}
+@objc public class ResponseAPDU : ABCSmartCardIO.BaseClass {
+  public init(apdu: [Swift.UInt8]) throws
+  public init(apdu: Foundation.Data) throws
+  public func getBytes() -> Foundation.Data
+  public func getData() -> Foundation.Data
+  public func getNr() -> Swift.UInt32
+  public func getSW() -> Swift.UInt16
+  public func getSW1() -> Swift.UInt8
+  public func getSW2() -> Swift.UInt8
+  public func toString() -> Swift.String
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers public class Status : ObjectiveC.NSObject {
+  public enum StatusCode : Swift.Error, ABCSmartCardIO.CaseNameable {
+    case success
+    case bluetoothStatusPoweredOff
+    case bluetoothStatusResetting
+    case bluetoothStatusUnauthorized
+    case bluetoothStatusUnknown
+    case bluetoothStatusUnsupported
+    case peripheralNotSupported
+    case peripheralAlreadyInList
+    case peripheralNotFoundInList
+    case peripheralMTUSizeNotSupported
+    case readerAlreadyInList
+    case readerNotFoundInList
+    case readerNotSupported
+    case readerInvalidUSBDescriptor
+    case readerInvalidCCIDDescriptor
+    case readerSlotNotSelected
+    case invalidParameter
+    case invalidNilParameter
+    case invalidParameterValueTooLarge
+    case invalidCCIDReader
+    case invalidCCIDBluetoothReader
+    case invalidATR
+    case badTSInATR
+    case badTCKInATR
+    case writeTimeout
+    case packetWriteTimeout
+    case readTimeout
+    case readCancelled
+    case packetReadTimeout
+    case authenticationFailed
+    case dataFrameInvalid
+    case dataFrameInvalidLength
+    case dataFrameInvalidHeader
+    case dataFrameInvalidChecksum
+    case dataFrameACKReceived
+    case dataFrameNACKReceived
+    case ccidFrameInvalid
+    case ccidFrameInvalidLength
+    case ccidFrameInvalidHeader
+    case ccidFrameInvalidFrameType
+    case ccidFrameOutOfSequence
+    case ccidErrorSlotNotFound
+    case ccidErrorNoCardPresent
+    case ccidErrorCardNotPoweredOn
+    case ccidErrorCommandNotSupported
+    case ccidErrorCommandAborted
+    case ccidErrorICCMute
+    case ccidErrorXfrParityError
+    case ccidErrorXfrOverrun
+    case ccidErrorHardwareError
+    case ccidErrorIccProtocolNotSupported
+    case ccidErrorIccClassNotSupported
+    case ccidErrorProcedureByteConflict
+    case ccidErrorDeactivatedProtocol
+    case ccidErrorBusyWithAutoSequence
+    case ccidErrorPinTimeout
+    case ccidErrorPinCancelled
+    case ccidErrorCommandSlotBusy
+    case ccidErrorOther
+    case cardProtocolNotSupported
+    case cardConnectedOtherProtocol
+    case cardIllegalState
+    case cardIllegalStateChannelClosed
+    case cardExclusiveAccessAlreadySet
+    case cardExclusiveAccessDenied
+    case cardOpenLogicalChannelFailed
+    case cardUnsupportedChannelNumber
+    case cardT0ExtendedLengthNotSupported
+    case cardCouldNotObtainResponse
+    public static func == (a: ABCSmartCardIO.Status.StatusCode, b: ABCSmartCardIO.Status.StatusCode) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension Status {
+  public var lastStatusCode: ABCSmartCardIO.Status.StatusCode {
+    get
+  }
+  public var lastStatusDescription: Swift.String {
+    get
+  }
+  public func statusDescription(status: ABCSmartCardIO.Status.StatusCode) -> Swift.String
+}
+extension Status : Foundation.LocalizedError {
+  public var errorDescription: Swift.String? {
+    get
+  }
+}
+@objc @_hasMissingDesignatedInitializers public class Card : ABCSmartCardIO.BaseClass {
+  public enum ConnectionProtocol : Swift.String, Swift.Equatable, ABCSmartCardIO.CaseNameable {
+    case Direct
+    case T0
+    case T1
+    case T0orT1
+    public init?(rawValue: Swift.String)
+    public typealias RawValue = Swift.String
+    public var rawValue: Swift.String {
+      get
+    }
+  }
+  @objc deinit
+  public func beginExclusive() throws
+  public func endExclusive() throws
+  public func getATR() -> ABCSmartCardIO.ATR
+  public func getBasicChannel() throws -> ABCSmartCardIO.CardChannel
+  public func getProtocol() -> ABCSmartCardIO.Card.ConnectionProtocol
+  public func getProtocol() -> Swift.String
+  public func openLogicalChannel() throws -> ABCSmartCardIO.CardChannel
+  public func transmitControlCommand(controlCode: Swift.Int, command: Foundation.Data) throws -> Foundation.Data?
+  public func disconnect(reset: Swift.Bool) throws
+  @objc override dynamic public init()
+}
+public protocol CaseNameable {
+  var name: Swift.String { get }
+}
+extension CaseNameable {
+  public var name: Swift.String {
+    get
+  }
+}
+@objc @_inheritsConvenienceInitializers public class BaseClass : ABCSmartCardIO.Status {
+  public func hashCode() -> Swift.Int
+  public func equals(obj: Swift.AnyObject?) -> Swift.Bool
+  public static func == (lhs: ABCSmartCardIO.BaseClass, rhs: ABCSmartCardIO.BaseClass) -> Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @_hasMissingDesignatedInitializers public class CardChannel : ABCSmartCardIO.BaseClass {
+  @objc deinit
+  public func close() throws
+  public func getCard() -> ABCSmartCardIO.Card
+  public func getChannelNumber() -> Swift.Int
+  public func transmit(command: ABCSmartCardIO.CommandAPDU) throws -> ABCSmartCardIO.ResponseAPDU
+  public func transmit(command: Foundation.Data, response: inout Foundation.Data) throws -> Swift.Int
+  @objc override dynamic public init()
+}
+@objc public class CommandAPDU : ABCSmartCardIO.BaseClass {
+  public init(apdu: [Swift.UInt8]) throws
+  public init(apdu: [Swift.UInt8], apduOffset: Swift.UInt32, apduLength: Swift.UInt32) throws
+  public init(apdu: Foundation.Data) throws
+  public init(apdu: Swift.String) throws
+  public init(cla: Swift.UInt8, ins: Swift.UInt8, p1: Swift.UInt8, p2: Swift.UInt8) throws
+  public init(cla: Swift.UInt8, ins: Swift.UInt8, p1: Swift.UInt8, p2: Swift.UInt8, data: [Swift.UInt8]) throws
+  public init(cla: Swift.UInt8, ins: Swift.UInt8, p1: Swift.UInt8, p2: Swift.UInt8, data: [Swift.UInt8], ne: Swift.UInt32) throws
+  public init(cla: Swift.UInt8, ins: Swift.UInt8, p1: Swift.UInt8, p2: Swift.UInt8, data: [Swift.UInt8], dataOffset: Swift.UInt32, dataLength: Swift.UInt32) throws
+  public init(cla: Swift.UInt8, ins: Swift.UInt8, p1: Swift.UInt8, p2: Swift.UInt8, data: [Swift.UInt8], dataOffset: Swift.UInt32, dataLength: Swift.UInt32, ne: Swift.UInt32) throws
+  public init(cla: Swift.UInt8, ins: Swift.UInt8, p1: Swift.UInt8, p2: Swift.UInt8, ne: Swift.UInt32) throws
+  public func getBytes() -> Foundation.Data
+  public func getCLA() -> Swift.UInt8
+  public func getINS() -> Swift.UInt8
+  public func getP1() -> Swift.UInt8
+  public func getP2() -> Swift.UInt8
+  public func getNc() -> Swift.UInt32
+  public func getNe() -> Swift.UInt32
+  public func getData() -> Foundation.Data
+  public func toString() -> Swift.String
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension ABCSmartCardIO.CardTerminals.State : Swift.Equatable {}
+extension ABCSmartCardIO.CardTerminals.State : Swift.Hashable {}
+extension ABCSmartCardIO.Status.StatusCode : Swift.Equatable {}
+extension ABCSmartCardIO.Status.StatusCode : Swift.Hashable {}
+extension ABCSmartCardIO.Card.ConnectionProtocol : Swift.Hashable {}
+extension ABCSmartCardIO.Card.ConnectionProtocol : Swift.RawRepresentable {}
