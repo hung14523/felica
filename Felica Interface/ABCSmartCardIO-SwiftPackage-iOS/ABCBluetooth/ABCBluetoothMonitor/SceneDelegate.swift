@@ -130,11 +130,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 let urlForSetting = UserDefaults.standard.string(forKey: "sendurl") ?? ""
                 let urlStr : String =  urlForSetting + "&kincd=" + idmAfter2
                 print("url=" + urlStr)
-                /*
                 let url = URL(string: urlStr)
+                /*
                 if let url = url {
                     UIApplication.shared.open(url)
                }*/
+                UserDefaults.standard.set(url, forKey: "loginURL")
                 self.window?.rootViewController!.performSegue(withIdentifier: "GoToWebView", sender: nil)
             } else {
                 //ここまで追加
@@ -142,15 +143,31 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
             
         } else {
-            
             print("\nNo detected! App delegate")
+            self.getBattery()
             self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.waitForChange), userInfo: nil, repeats: false)
         }
     }
-    func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let destination = segue.destination as! WebViewController
-        destination.syacd = "13458"
+    //20220411
+    func getBattery(){
+        if let terminal = firstTerminal {
+            do {
+                let level = try terminal.getBatteryLevel()
+                if level == 0xFF {
+                    print("Battery charging...")
+                }
+                else {
+                    print(level)
+                }
+            }
+            catch {
+            }
+        }
+        else {
+            print("Please select a terminal first...")
+        }
     }
+    /*-------*/
     /// Scans for CIR415/CIR515 bluetooth terminals for 5 seconds and returns the first one in the terminal list while updating the UI
     func scanForTerminals() {
         firstTerminal = scanForABCircleTerminals(duration: 5)

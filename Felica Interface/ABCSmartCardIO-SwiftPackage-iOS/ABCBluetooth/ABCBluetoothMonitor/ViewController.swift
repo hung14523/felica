@@ -19,7 +19,9 @@ import CoreBluetooth
 class ViewController: UIViewController{
 
     //20220411
-    @IBOutlet weak var bt_Scan:UIButton!
+    @IBOutlet weak var buttonLogin:UIButton!
+    @IBOutlet weak var buttonConnect:UIButton!
+    /*-------*/
     /// Control outlet for Scan UIButton
     @IBOutlet weak var buttonScan: UIButton!
     /// Control outlet for Terminal UILabel
@@ -77,6 +79,13 @@ class ViewController: UIViewController{
             var cards     = [Card]()
             print("Connect terminals...")
             cards = self.connectCards(terminals: terminals)
+            //20220411
+            if !terminals.isEmpty {
+                /// Set the first terminal
+                firstTerminal = terminals.first
+            }
+            /*---------*/
+
             if (cards.isEmpty) {
                 self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.waitForChange), userInfo: nil, repeats: true)
                 return
@@ -88,25 +97,32 @@ class ViewController: UIViewController{
             print("idm=" + idm)
             if (!idm.isEmpty) {
                 let idmAfter = idm.replacingOccurrences(of: " ", with: "")
+                let idmAfter2 = idmAfter.dropLast(4); //20220411
                 let urlForSetting = UserDefaults.standard.string(forKey: "sendurl") ?? ""
-                let url : String =  urlForSetting + "?param=" + idmAfter
+                //let url : String =  urlForSetting + "?param=" + idmAfter //20220411
+                let url : String =  urlForSetting + "&kincd=" + idmAfter2
                 print("url=" + url)
+                let qiitaUrl = URL(string: url)
                 //20220411
                 /*
-                let qiitaUrl = URL(string: url)
                 if let qiitaUrl = qiitaUrl {
                     UIApplication.shared.open(qiitaUrl)
                }*/
-                print("***waitForChange")
+                UserDefaults.standard.set(qiitaUrl, forKey: "loginURL")
                 self.goToWebView()
             } else {
                 self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.waitForChange), userInfo: nil, repeats: true)
             }
             
         } else {
-            
             print("\nNo detected! ViewController")
             //20220411
+            let terminals = self.abcTerminalFactory.terminals().list()
+            if !terminals.isEmpty {
+                /// Set the first terminal
+                firstTerminal = terminals.first
+            }
+            self.getBattery()
             self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.waitForChange), userInfo: nil, repeats: false)
         }
     }
@@ -123,11 +139,39 @@ class ViewController: UIViewController{
     }
     //20220411
     @IBAction func goToWebView(){
-        self.performSegue(withIdentifier: "GoToWebView", sender: self)
+        self.performSegue(withIdentifier: "GoToWebView", sender: nil)
     }
     
     @IBAction func returned(segue: UIStoryboardSegue){
-        self.waitForChange()
+        //self.waitForChange(
+        self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.waitForChange), userInfo: nil, repeats: false)
+    }
+    
+    func getBattery(){
+        if let terminal = firstTerminal {
+            do {
+                let level = try terminal.getBatteryLevel()
+                if level == 0xFF {
+                    print("Battery charging...")
+                }
+                else {
+                    print(level)
+                }
+                buttonConnect.setTitle("Disconnect", for: .normal)
+            }
+            catch {
+            }
+        }
+        else {
+            print("Please select a terminal first...")
+            setLabelText(text: "")
+            setTextView(text: "スキャン不可")
+            self.buttonConnect.setTitle("Connect", for: .normal)
+        }
+    }
+    
+    @IBAction func buttonConnectTapped(_ sender: UIButton){
+        
     }
     /*-------*/
     override func viewWillDisappear(_ animated: Bool) {
